@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TimerTriggerFunction_ODATO.Context;
+using TimerTriggerFunction_ODATO.Models;
 
 namespace TimerTriggerFunction_ODATO
 {
@@ -42,7 +44,15 @@ namespace TimerTriggerFunction_ODATO
                 _logger.LogInformation("--------------------------------------------------");
 
                 //Add Database and save the jokes
-                
+
+                var joke = new Jokes
+                {
+                    Setup = bodyDict["setup"].ToString(),
+                    Punchline = bodyDict["punchline"].ToString(),
+                };
+
+                await _context.Jokes.AddAsync(joke);
+                await _context.SaveChangesAsync();
             }
 
 
